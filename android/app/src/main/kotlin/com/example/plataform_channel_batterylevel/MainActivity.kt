@@ -1,3 +1,5 @@
+package com.example.plataform_channel_batterylevel
+
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -10,20 +12,29 @@ import android.os.BatteryManager
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 
+
+
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "samples.flutter.dev/battery"
+  private val CHANNEL = "samples.flutter.dev/battery"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
-            call, result ->
-            if( call.method.equals("getBatteryLevel")){
-                int batteryLevel = getBatteryLevel();
-            }
-            result.notImplemented();
-            return;
-        }
-    }
+          super.configureFlutterEngine(flutterEngine)
+
+          MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
+              call, result ->
+              if (call.method == "getBatteryLevel") {
+                  val batteryLevel = getBatteryLevel()
+
+                  if (batteryLevel != -1) {
+                      result.success(batteryLevel)
+                  } else {
+                      result.error("UNAVAILABLE", "Battery level not available.", null)
+                  }
+              } else {
+                  result.notImplemented()
+              }
+          }
+  }
 
     private fun getBatteryLevel(): Int {
         val batteryLevel: Int
@@ -36,22 +47,6 @@ class MainActivity: FlutterActivity() {
         }
 
         return batteryLevel
+
     }
-
-    MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
-        // This method is invoked on the main thread.
-        call, result ->
-        if (call.method == "getBatteryLevel") {
-            val batteryLevel = getBatteryLevel()
-
-            if (batteryLevel != -1) {
-                result.success(batteryLevel)
-            } else {
-                result.error("UNAVAILABLE", "Battery level not available.", null)
-            }
-        } else {
-            result.notImplemented()
-        }
-    }
-
 }

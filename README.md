@@ -1,4 +1,4 @@
-# batterylevel
+# plataform_channel_batterylevel
 
 A new Flutter project.
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +13,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const platform = MethodChannel('samples.flutter.dev/battery');
 
-  // Get battery level.
   String _batteryLevel = 'Unknown battery level.';
 
   Future<void> _getBatteryLevel() async {
@@ -20,6 +21,7 @@ class _HomePageState extends State<HomePage> {
       final int result = await platform.invokeMethod('getBatteryLevel');
       batteryLevel = 'Battery level at $result % .';
     } on PlatformException catch (e) {
+      log(e.toString());
       batteryLevel = "Failed to get battery level: '${e.message}'.";
     }
 
